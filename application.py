@@ -27,3 +27,7 @@ if __name__ == '__main__':
     client = get_authenticated_service()
     channels = channels_list_by_username(
             client, part='contentDetails', forUsername=username)
+
+    uploads_playlist_id = (
+            channels['items'][0]['contentDetails']
+            ['relatedPlaylists']['uploads'])
