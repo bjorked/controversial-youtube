@@ -24,6 +24,12 @@ def playlist_items_list_by_playlist_id(client, **kwargs):
     return client.playlistItems().list(**kwargs).execute()
 
 
+def videos_list_by_id(client, **kwargs):
+    """Returns a list of video objects for given video id
+    """
+    return client.videos().list(**kwargs).execute()
+
+
 def extract_video_ids(client, playlist_id):
     """Given a playlist id, extracts video ID's and puts them in a list
     """
