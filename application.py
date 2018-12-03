@@ -78,6 +78,16 @@ def get_video_stats(client, video_ids):
     return videos
 
 
+def controversiality(likeCount, dislikeCount):
+    """Calculates controversiality rating based on like/dislike counts
+    """
+    total = likeCount + dislikeCount
+    if total == 0:
+        return 50.0
+    else:
+        return (dislikeCount / total) * 100 if dislikeCount != 0 else 100.0
+
+
 if __name__ == '__main__':
     if (len(sys.argv) > 1):
         username = sys.argv[1]
