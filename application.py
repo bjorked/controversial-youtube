@@ -29,6 +29,7 @@ if __name__ == '__main__':
         username = sys.argv[1]
     else:
         print("Username not provided. Usage:\npython application.py username")
+        sys.exit(1)
 
     client = get_authenticated_service()
     channels = channels_list_by_username(
