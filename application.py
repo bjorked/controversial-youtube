@@ -18,6 +18,12 @@ def channels_list_by_username(client, **kwargs):
     return client.channels().list(**kwargs).execute()
 
 
+def playlist_items_list_by_playlist_id(client, **kwargs):
+    """Returns a list of playlist items for given playlist id
+    """
+    return client.playlistItems().list(**kwargs).execute()
+
+
 if __name__ == '__main__':
     if (len(sys.argv) > 1):
         username = sys.argv[1]
