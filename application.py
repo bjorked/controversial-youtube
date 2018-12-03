@@ -24,6 +24,31 @@ def playlist_items_list_by_playlist_id(client, **kwargs):
     return client.playlistItems().list(**kwargs).execute()
 
 
+def extract_video_ids(client, playlist_id):
+    """Given a playlist id, extracts video ID's and puts them in a list
+    """
+    response = playlist_items_list_by_playlist_id(
+            client, part='contentDetails',
+            maxResults=50, playlistId=playlist_id)
+
+    video_ids = []
+    while True:
+        for item in response['items']:
+            video_ids.append(item['contentDetails']['videoId'])
+
+        if 'nextPageToken' not in response:
+            break
+        else:
+            token = response['nextPageToken']
+            response = (
+                    playlist_items_list_by_playlist_id(
+                        client, part='contentDetails',
+                        maxResults=50, pageToken=token,
+                        playlistId=playlist_id))
+
+    return video_ids
+
+
 if __name__ == '__main__':
     if (len(sys.argv) > 1):
         username = sys.argv[1]
@@ -38,3 +63,5 @@ if __name__ == '__main__':
     uploads_playlist_id = (
             channels['items'][0]['contentDetails']
             ['relatedPlaylists']['uploads'])
+
+    video_ids = extract_video_ids(client, uploads_playlist_id)
