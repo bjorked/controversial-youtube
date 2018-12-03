@@ -55,6 +55,29 @@ def extract_video_ids(client, playlist_id):
     return video_ids
 
 
+def get_video_stats(client, video_ids):
+    """Get video stats for each video_id, extract what is needed
+    and put in a list of dicts
+    """
+    videos = []
+    for video_id in video_ids:
+        response = videos_list_by_id(client,
+                                     part='snippet, statistics', id=video_id)
+
+        title = response['items'][0]['snippet']['title']
+        likeCount = int(response['items'][0]['statistics']['likeCount'])
+        dislikeCount = int(response['items'][0]['statistics']['dislikeCount'])
+        ld_ratio = controversiality(likeCount, dislikeCount)
+
+        video_dict = {
+                'title': title,
+                'id': video_id,
+                'ld_ratio': ld_ratio}
+        videos.append(video_dict)
+
+    return videos
+
+
 if __name__ == '__main__':
     if (len(sys.argv) > 1):
         username = sys.argv[1]
