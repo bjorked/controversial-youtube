@@ -88,6 +88,12 @@ def controversiality(likeCount, dislikeCount):
         return (dislikeCount / total) * 100 if dislikeCount != 0 else 100.0
 
 
+def sort_by_controversiality(videos):
+    """Sorts a list of video objects by like/dislike ration in ascending order
+    """
+    return sorted(videos, key=lambda x: x['ld_ratio'])
+
+
 if __name__ == '__main__':
     if (len(sys.argv) > 1):
         username = sys.argv[1]
@@ -104,3 +110,4 @@ if __name__ == '__main__':
             ['relatedPlaylists']['uploads'])
 
     video_ids = extract_video_ids(client, uploads_playlist_id)
+    videos = get_video_stats(client, video_ids)
