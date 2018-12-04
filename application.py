@@ -65,33 +65,33 @@ def get_video_stats(client, video_ids):
                                      part='snippet, statistics', id=video_id)
 
         title = response['items'][0]['snippet']['title']
-        likeCount = int(response['items'][0]['statistics']['likeCount'])
-        dislikeCount = int(response['items'][0]['statistics']['dislikeCount'])
-        ld_ratio = controversiality(likeCount, dislikeCount)
+        like_count = int(response['items'][0]['statistics']['likeCount'])
+        dislike_count = int(response['items'][0]['statistics']['dislikeCount'])
+        dtl_ratio = dislike_to_like_ratio(like_count, dislike_count)
 
         video_dict = {
                 'title': title,
                 'id': video_id,
-                'ld_ratio': ld_ratio}
+                'dtl_ratio': dtl_ratio}
         videos.append(video_dict)
 
     return videos
 
 
-def controversiality(likeCount, dislikeCount):
+def dislike_to_like_ratio(like_count, dislike_count):
     """Calculates controversiality rating based on like/dislike counts
     """
-    total = likeCount + dislikeCount
+    total = like_count + dislike_count
     if total == 0:
         return 50.0
     else:
-        return (dislikeCount / total) * 100 if dislikeCount != 0 else 100.0
+        return (dislike_count / total) * 100 if dislike_count != 0 else 100.0
 
 
-def sort_by_controversiality(videos):
+def sort_by_dtl_ratio(videos):
     """Sorts a list of video objects by like/dislike ration in ascending order
     """
-    return sorted(videos, key=lambda x: x['ld_ratio'])
+    return sorted(videos, key=lambda x: x['dtl_ratio'])
 
 
 if __name__ == '__main__':
