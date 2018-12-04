@@ -1,5 +1,5 @@
 import os
-import sys
+import argparse
 from apiclient.discovery import build
 
 
@@ -107,12 +107,23 @@ def print_controversial(videos, count):
                   f"Ratio: {round(video['dtl_ratio'], 2)}")
 
 
+def parse_args():
+    """Get channel's name and optional count from the commandline
+    """
+    parser = argparse.ArgumentParser(
+            description="Print youtube channel's controversial videos")
+    parser.add_argument('channel', metavar='channel',
+                        type=str, help="channel's name")
+    parser.add_argument('--count', metavar='count',
+                        type=int, help='amount of videos to print', default=5)
+    args = parser.parse_args()
+    return vars(args)
+
+
 if __name__ == '__main__':
-    if (len(sys.argv) > 1):
-        username = sys.argv[1]
-    else:
-        print("Username not provided. Usage:\npython application.py username")
-        sys.exit(1)
+    args = parse_args()
+    username = args['channel']
+    count = args['count']
 
     client = get_authenticated_service()
     channels = channels_list_by_username(
@@ -124,4 +135,4 @@ if __name__ == '__main__':
 
     video_ids = extract_video_ids(client, uploads_playlist_id)
     videos = get_video_stats(client, video_ids)
-    print_controversial(sort_by_dtl_ratio(videos), 5)
+    print_controversial(sort_by_dtl_ratio(videos), count)
