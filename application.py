@@ -94,6 +94,19 @@ def sort_by_dtl_ratio(videos):
     return sorted(videos, key=lambda x: x['dtl_ratio'])
 
 
+def print_controversial(videos, count):
+    """Prints specified amount of most controversial videos
+    """
+    if (len(videos) < count):
+        print("Channel doesn't have that many videos")
+    else:
+        for i in range(1, count+1):
+            video = videos[i]
+            print(f"{i}. {video['title']}\n"
+                  f"Link: https://www.youtube.com/watch?v={video['id']}\n"
+                  f"Ratio: {round(video['dtl_ratio'], 2)}")
+
+
 if __name__ == '__main__':
     if (len(sys.argv) > 1):
         username = sys.argv[1]
@@ -111,3 +124,4 @@ if __name__ == '__main__':
 
     video_ids = extract_video_ids(client, uploads_playlist_id)
     videos = get_video_stats(client, video_ids)
+    print_controversial(sort_by_dtl_ratio(videos), 5)
