@@ -91,7 +91,7 @@ def dislike_to_like_ratio(like_count, dislike_count):
 def sort_by_dtl_ratio(videos):
     """Sorts a list of video objects by like/dislike ration in ascending order
     """
-    return sorted(videos, key=lambda x: x['dtl_ratio'])
+    return sorted(videos, key=lambda x: x['dtl_ratio'], reverse=True)
 
 
 def print_controversial(videos, count):
