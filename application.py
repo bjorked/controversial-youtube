@@ -85,7 +85,7 @@ def dislike_to_like_ratio(like_count, dislike_count):
     if total == 0:
         return 50.0
     else:
-        return (dislike_count / total) * 100 if dislike_count != 0 else 100.0
+        return (dislike_count / total) * 100 if dislike_count != 0 else 0
 
 
 def sort_by_dtl_ratio(videos):
