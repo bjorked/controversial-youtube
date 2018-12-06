@@ -19,6 +19,13 @@ def channels_list_by_username(client, **kwargs):
     return client.channels().list(**kwargs).execute()
 
 
+def search_list_by_keyword(client, **kwargs):
+    """Returns a collection of search results that match
+    the query parameters specified in the API request
+    """
+    return client.search().list(**kwargs).execute()
+
+
 def get_channels(client, username):
     """Makes a request for list of channels based on channel name,
     also checks if channel exists
@@ -31,7 +38,6 @@ def get_channels(client, username):
         sys.exit(1)
 
     return channels
-
 
 
 def playlist_items_list_by_playlist_id(client, **kwargs):
