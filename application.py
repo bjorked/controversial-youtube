@@ -55,25 +55,39 @@ def extract_video_ids(client, playlist_id):
     return video_ids
 
 
-def get_video_stats(client, video_ids):
-    """Get video stats for each video_id, extract what is needed
-    and put in a list of dicts
+def get_videos(client, video_ids):
+    """Makes a request for each video_id, extract title, like/dislike counts
+    and bundle it all up in a list
     """
     videos = []
-    for video_id in video_ids:
-        response = videos_list_by_id(client,
-                                     part='snippet, statistics', id=video_id)
 
-        title = response['items'][0]['snippet']['title']
-        like_count = int(response['items'][0]['statistics']['likeCount'])
-        dislike_count = int(response['items'][0]['statistics']['dislikeCount'])
-        dtl_ratio = dislike_to_like_ratio(like_count, dislike_count)
+    # Can place at most 50 video_id's in a request
+    beg = 0
+    end = 49 if 49 <= len(video_ids) else len(video_ids)
+    # Loop through every 50 indices of video_ids list
+    while beg <= len(video_ids):
+        ids_str = ','.join(video_ids[beg:end])
+        response = videos_list_by_id(client, id=ids_str,
+                                     part='snippet, statistics', maxResults=50)
 
-        video_dict = {
-                'title': title,
-                'id': video_id,
-                'dtl_ratio': dtl_ratio}
-        videos.append(video_dict)
+        videos_part = []
+        for item in response['items']:
+            title = item['snippet']['title']
+            video_id = item['id']
+            like_count = int(item['statistics']['likeCount'])
+            dislike_count = int(item['statistics']['dislikeCount'])
+            dtl_ratio = dislike_to_like_ratio(like_count, dislike_count)
+
+            video_dict = {
+                    'title': title,
+                    'id': video_id,
+                    'dtl_ratio': dtl_ratio}
+            videos_part.append(video_dict)
+
+        videos += videos_part
+
+        beg = end + 1
+        end = end + 50 if (end + 50) <= len(video_ids) else len(video_ids)
 
     return videos
 
@@ -134,5 +148,5 @@ if __name__ == '__main__':
             ['relatedPlaylists']['uploads'])
 
     video_ids = extract_video_ids(client, uploads_playlist_id)
-    videos = get_video_stats(client, video_ids)
+    videos = get_videos(client, video_ids)
     print_controversial(sort_by_dtl_ratio(videos), count)
