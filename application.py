@@ -1,5 +1,6 @@
 import os
 import argparse
+import sys
 from apiclient.discovery import build
 
 
@@ -130,8 +131,13 @@ def parse_args():
                         type=str, help="channel's name")
     parser.add_argument('--count', metavar='count',
                         type=int, help='amount of videos to print', default=5)
-    args = parser.parse_args()
-    return vars(args)
+    args = vars(parser.parse_args())
+
+    if args['count'] <= 0:
+        print('Invalid result count')
+        sys.exit(1)
+
+    return args
 
 
 if __name__ == '__main__':
