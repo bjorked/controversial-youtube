@@ -102,6 +102,10 @@ def get_videos(client, video_ids):
 
         videos_part = []
         for item in response['items']:
+            # Some videos have likes/dislikes disabled - skip them
+            if 'likeCount' not in item['statistics']:
+                continue
+
             title = item['snippet']['title']
             video_id = item['id']
             like_count = int(item['statistics']['likeCount'])
