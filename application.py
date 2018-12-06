@@ -13,7 +13,7 @@ def get_authenticated_service():
     return build(API_SERVICE_NAME, API_VERSION, developerKey=DEVELOPER_KEY)
 
 
-def channels_list_by_username(client, **kwargs):
+def channels_list(client, **kwargs):
     """Returns a list of channels for given username
     """
     return client.channels().list(**kwargs).execute()
@@ -27,11 +27,19 @@ def search_list_by_keyword(client, **kwargs):
 
 
 def get_channels(client, username):
-    """Makes a request for list of channels based on channel name,
+    """Makes a request for list of channels based on channel name or id,
     also checks if channel exists
     """
-    channels = channels_list_by_username(
-            client, part='contentDetails', forUsername=username)
+    # Channels with spaces in their names can only be found through channel_id
+    if ' ' in username:
+        response = search_list_by_keyword(client, part='snippet',
+                                          maxResults=1, q=username,
+                                          type='channel')
+        channel_id = response['items'][0]['id']['channelId']
+        channels = channels_list(client, part='contentDetails', id=channel_id)
+    else:
+        channels = channels_list(client, part='contentDetails',
+                                 forUsername=username)
 
     if not channels['items']:
         print('Channel not found')
