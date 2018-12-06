@@ -115,7 +115,9 @@ def get_videos(client, video_ids):
             video_dict = {
                     'title': title,
                     'id': video_id,
-                    'dtl_ratio': dtl_ratio}
+                    'dtl_ratio': dtl_ratio,
+                    'likes': like_count,
+                    'dislikes': dislike_count}
             videos_part.append(video_dict)
 
         videos += videos_part
@@ -152,6 +154,7 @@ def print_controversial(videos, count):
             video = videos[i]
             print(f"{i}. {video['title']}\n"
                   f"Link: https://www.youtube.com/watch?v={video['id']}\n"
+                  f"Likes: {video['likes']} Dislikes: {video['dislikes']}\n"
                   f"Ratio: {round(video['dtl_ratio'], 2)}")
 
 
