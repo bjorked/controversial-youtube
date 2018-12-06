@@ -19,6 +19,21 @@ def channels_list_by_username(client, **kwargs):
     return client.channels().list(**kwargs).execute()
 
 
+def get_channels(client, username):
+    """Makes a request for list of channels based on channel name,
+    also checks if channel exists
+    """
+    channels = channels_list_by_username(
+            client, part='contentDetails', forUsername=username)
+
+    if not channels['items']:
+        print('Channel not found')
+        sys.exit(1)
+
+    return channels
+
+
+
 def playlist_items_list_by_playlist_id(client, **kwargs):
     """Returns a list of playlist items for given playlist id
     """
@@ -146,8 +161,7 @@ if __name__ == '__main__':
     count = args['count']
 
     client = get_authenticated_service()
-    channels = channels_list_by_username(
-            client, part='contentDetails', forUsername=username)
+    channels = get_channels(client, username)
 
     uploads_playlist_id = (
             channels['items'][0]['contentDetails']
