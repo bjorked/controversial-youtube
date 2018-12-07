@@ -4,17 +4,6 @@ import sys
 from apiclient.discovery import build
 
 
-try:
-    DEVELOPER_KEY = os.environ['YOUTUBE_API_KEY']
-except KeyError:
-    print('Error: Youtube API key is required,',
-          'please set it to YOUTUBE_API_KEY env variable')
-    sys.exit(1)
-
-API_SERVICE_NAME = 'youtube'
-API_VERSION = 'v3'
-
-
 def get_authenticated_service():
     return build(API_SERVICE_NAME, API_VERSION, developerKey=DEVELOPER_KEY)
 
@@ -195,6 +184,16 @@ def parse_args():
 
 
 if __name__ == '__main__':
+    try:
+        DEVELOPER_KEY = os.environ['YOUTUBE_API_KEY']
+    except KeyError:
+        print('Error: Youtube API key is required,',
+              'please set it to YOUTUBE_API_KEY env variable')
+        sys.exit(1)
+
+    API_SERVICE_NAME = 'youtube'
+    API_VERSION = 'v3'
+
     args = parse_args()
     username = args['channel']
     count = args['count']
