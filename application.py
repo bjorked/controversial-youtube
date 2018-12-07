@@ -4,7 +4,13 @@ import sys
 from apiclient.discovery import build
 
 
-DEVELOPER_KEY = os.environ['YOUTUBE_API_KEY']
+try:
+    DEVELOPER_KEY = os.environ['YOUTUBE_API_KEY']
+except KeyError:
+    print('Error: Youtube API key is required,',
+          'please set it to YOUTUBE_API_KEY env variable')
+    sys.exit(1)
+
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
 
@@ -195,7 +201,6 @@ if __name__ == '__main__':
 
     client = get_authenticated_service()
     channels = get_channels(client, username)
-
     uploads_playlist_id = (
             channels['items'][0]['contentDetails']
             ['relatedPlaylists']['uploads'])
