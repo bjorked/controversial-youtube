@@ -14,7 +14,7 @@ def get_authenticated_service():
 
 
 def channels_list(client, **kwargs):
-    """Returns a list of channels for given username
+    """Returns a list of channels for given username or channel_id
     """
     return client.channels().list(**kwargs).execute()
 
@@ -32,13 +32,18 @@ def get_channels(client, username):
     """
     # Channels with spaces in their names can only be found through channel_id
     if ' ' in username:
-        response = search_list_by_keyword(client, part='snippet',
-                                          maxResults=1, q=username,
+        response = search_list_by_keyword(client,
+                                          part='snippet',
+                                          maxResults=1,
+                                          q=username,
                                           type='channel')
         channel_id = response['items'][0]['id']['channelId']
-        channels = channels_list(client, part='contentDetails', id=channel_id)
+        channels = channels_list(client,
+                                 part='contentDetails',
+                                 id=channel_id)
     else:
-        channels = channels_list(client, part='contentDetails',
+        channels = channels_list(client,
+                                 part='contentDetails',
                                  forUsername=username)
 
     if not channels['items']:
@@ -63,9 +68,10 @@ def videos_list_by_id(client, **kwargs):
 def extract_video_ids(client, playlist_id):
     """Given a playlist id, extracts video ID's and puts them in a list
     """
-    response = playlist_items_list_by_playlist_id(
-            client, part='contentDetails',
-            maxResults=50, playlistId=playlist_id)
+    response = playlist_items_list_by_playlist_id(client,
+                                                  part='contentDetails',
+                                                  maxResults=50,
+                                                  playlistId=playlist_id)
 
     video_ids = []
     while True:
@@ -76,11 +82,12 @@ def extract_video_ids(client, playlist_id):
             break
         else:
             token = response['nextPageToken']
-            response = (
-                    playlist_items_list_by_playlist_id(
-                        client, part='contentDetails',
-                        maxResults=50, pageToken=token,
-                        playlistId=playlist_id))
+            response = playlist_items_list_by_playlist_id(
+                                                  client,
+                                                  part='contentDetails',
+                                                  maxResults=50,
+                                                  pageToken=token,
+                                                  playlistId=playlist_id)
 
     return video_ids
 
@@ -147,7 +154,7 @@ def sort_by_dtl_ratio(videos):
 def print_controversial(videos, count):
     """Prints specified amount of most controversial videos
     """
-    if (len(videos) < count):
+    if len(videos) < count:
         print("Channel doesn't have that many videos")
     else:
         for i in range(1, count+1):
@@ -163,10 +170,15 @@ def parse_args():
     """
     parser = argparse.ArgumentParser(
             description="Print youtube channel's controversial videos")
-    parser.add_argument('channel', metavar='channel',
-                        type=str, help="channel's name")
-    parser.add_argument('--count', metavar='count',
-                        type=int, help='amount of videos to print', default=5)
+    parser.add_argument('channel',
+                        metavar='channel',
+                        type=str,
+                        help="channel's name")
+    parser.add_argument('--count',
+                        metavar='count',
+                        type=int,
+                        help='amount of videos to print',
+                        default=5)
     args = vars(parser.parse_args())
 
     if args['count'] <= 0:
